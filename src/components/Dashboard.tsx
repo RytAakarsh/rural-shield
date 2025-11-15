@@ -7,6 +7,7 @@ import { VerificationPanel } from "./VerificationPanel";
 import { Button } from "./ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useDashboardData } from "@/hooks/useDashboardData";
+import { useRealtimeTrustScore } from "@/hooks/useRealtimeTrustScore";
 
 interface DashboardProps {
   userId: string;
@@ -15,8 +16,10 @@ interface DashboardProps {
 export const Dashboard = ({ userId }: DashboardProps) => {
   const { signOut } = useAuth();
   const { trustScores, fraudAlerts, activityLogs, securityLayers } = useDashboardData(userId);
+  const realtimeTrustScore = useRealtimeTrustScore(userId);
 
-  const latestTrustScore = trustScores?.[0]?.score || 87;
+  // Use real-time trust score if available, otherwise use latest from query
+  const latestTrustScore = realtimeTrustScore ?? trustScores?.[0]?.score ?? 87;
   const activeAlerts = fraudAlerts?.filter(alert => alert.status === 'active').length || 0;
   return (
     <section className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
