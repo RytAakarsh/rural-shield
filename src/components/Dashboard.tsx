@@ -82,7 +82,7 @@ export const Dashboard = ({ userId }: DashboardProps) => {
 
         {/* Trust Score and Activity - Compact Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <TrustScoreGauge score={latestTrustScore} label="Overall Trust Score" />
+          <TrustScoreGauge score={latestTrustScore} userId={userId} />
           <ActivityFeed activities={activityLogs || []} />
         </div>
 

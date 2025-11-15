@@ -107,6 +107,16 @@ serve(async (req) => {
       });
     }
 
+    // Calculate and insert trust score based on risk
+    const trustScore = Math.max(10, Math.min(100, 100 - scamSignal.riskScore));
+    await supabaseClient.from('trust_scores').insert({
+      user_id: userId,
+      score: trustScore,
+      layer_1_score: 85,
+      layer_2_score: 90,
+      layer_3_score: trustScore,
+    });
+
     // Use AI to analyze for fraud ring patterns
     if (scamSignal.riskScore > 60) {
       const { data: networkData } = await supabaseClient
