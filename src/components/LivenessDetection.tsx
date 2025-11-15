@@ -94,7 +94,7 @@ export const LivenessDetection = ({ onComplete, onCancel }: LivenessDetectionPro
 
   const calculateFrameDifference = (currentFrame: ImageData, previousFrame: ImageData): number => {
     let diff = 0;
-    const threshold = 25; // Lower threshold for better sensitivity
+    const threshold = 15; // More sensitive threshold
     
     for (let i = 0; i < currentFrame.data.length; i += 4) {
       const rDiff = Math.abs(currentFrame.data[i] - previousFrame.data[i]);
@@ -129,10 +129,10 @@ export const LivenessDetection = ({ onComplete, onCancel }: LivenessDetectionPro
 
     if (previousFrameRef.current) {
       const diff = calculateFrameDifference(currentFrame, previousFrameRef.current);
-      const movementThreshold = (canvas.width * canvas.height) * 0.015; // 1.5% of pixels changed (more sensitive)
+      const movementThreshold = (canvas.width * canvas.height) * 0.008; // 0.8% of pixels changed (more sensitive)
       
       const score = Math.min(100, (diff / movementThreshold) * 100);
-      setMovementScore(score);
+      setMovementScore(prev => Math.max(prev, score)); // Keep the highest score
 
       if (diff > movementThreshold) {
         setMovementDetected(true);
@@ -154,7 +154,7 @@ export const LivenessDetection = ({ onComplete, onCancel }: LivenessDetectionPro
     // Start movement detection
     detectMovement();
 
-    // Progress animation
+    // Progress animation (12 seconds)
     let progress = 0;
     const progressInterval = setInterval(() => {
       progress += 1;
@@ -162,13 +162,13 @@ export const LivenessDetection = ({ onComplete, onCancel }: LivenessDetectionPro
       if (progress >= 100) {
         clearInterval(progressInterval);
       }
-    }, 100);
+    }, 120);
 
-    // Set timeout for detection (10 seconds)
+    // Set timeout for detection (12 seconds for more time)
     detectionTimeoutRef.current = setTimeout(() => {
       clearInterval(progressInterval);
       completeDetection();
-    }, 10000);
+    }, 12000);
   };
 
   const completeDetection = () => {
@@ -183,7 +183,9 @@ export const LivenessDetection = ({ onComplete, onCancel }: LivenessDetectionPro
       cancelAnimationFrame(animationFrameRef.current);
     }
 
-    if (movementDetected && movementScore > 50) {
+    console.log("Detection complete - Movement detected:", movementDetected, "Score:", movementScore);
+
+    if (movementDetected && movementScore > 30) {
       setInstruction("✅ Liveness verified successfully!");
       toast.success("Liveness check passed! Face movement confirmed.");
       setTimeout(() => {
