@@ -13,7 +13,7 @@ interface LayerCardProps {
     value: string;
     status: "active" | "warning" | "success";
   }[];
-  status: "active" | "idle" | "processing";
+  status: "active" | "idle" | "processing" | "warning" | "error";
 }
 
 export const LayerCard = ({ layer, title, description, icon: Icon, metrics, status }: LayerCardProps) => {
@@ -21,12 +21,16 @@ export const LayerCard = ({ layer, title, description, icon: Icon, metrics, stat
     active: "border-primary/40 shadow-[0_0_20px_rgba(6,182,212,0.3)]",
     idle: "border-border",
     processing: "border-warning/40 shadow-[0_0_20px_rgba(251,191,36,0.3)]",
+    warning: "border-warning/40 shadow-[0_0_20px_rgba(251,191,36,0.3)]",
+    error: "border-destructive/40 shadow-[0_0_20px_rgba(239,68,68,0.3)]",
   };
 
   const statusBadge = {
     active: { variant: "default" as const, label: "Active" },
     idle: { variant: "outline" as const, label: "Idle" },
     processing: { variant: "secondary" as const, label: "Processing" },
+    warning: { variant: "secondary" as const, label: "Warning" },
+    error: { variant: "destructive" as const, label: "Error" },
   };
 
   return (
