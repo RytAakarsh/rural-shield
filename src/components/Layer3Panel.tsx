@@ -49,6 +49,7 @@ export const Layer3Panel = ({ userId }: Layer3PanelProps) => {
           rapidDecisionTime: Math.random() > 0.7,
           repeatChecking: Math.random() > 0.6,
           unusualSpeed: Math.random() > 0.8,
+          coercionScore: Math.random() * 0.3, // Store for behavioral_analytics table
         },
         cognitiveBehavior: {
           decisionLatency: Math.random() * 3 + 1, // seconds
