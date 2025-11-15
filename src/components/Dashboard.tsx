@@ -1,10 +1,23 @@
-import { Shield, Users, AlertTriangle, TrendingUp, Smartphone, Video, Activity } from "lucide-react";
+import { Shield, Users, AlertTriangle, TrendingUp, Smartphone, Video, Activity, LogOut } from "lucide-react";
 import { StatCard } from "./StatCard";
 import { TrustScoreGauge } from "./TrustScoreGauge";
 import { ActivityFeed } from "./ActivityFeed";
 import { LayerCard } from "./LayerCard";
+import { VerificationPanel } from "./VerificationPanel";
+import { Button } from "./ui/button";
+import { useAuth } from "@/hooks/useAuth";
+import { useDashboardData } from "@/hooks/useDashboardData";
 
-export const Dashboard = () => {
+interface DashboardProps {
+  userId: string;
+}
+
+export const Dashboard = ({ userId }: DashboardProps) => {
+  const { signOut } = useAuth();
+  const { trustScores, fraudAlerts, activityLogs, securityLayers } = useDashboardData(userId);
+
+  const latestTrustScore = trustScores?.[0]?.score || 87;
+  const activeAlerts = fraudAlerts?.filter(alert => alert.status === 'active').length || 0;
   return (
     <section className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto space-y-8">
@@ -17,9 +30,15 @@ export const Dashboard = () => {
             </h2>
             <p className="text-muted-foreground mt-2">Real-time monitoring and intelligence</p>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="h-3 w-3 bg-accent rounded-full animate-pulse-glow" />
-            <span className="text-sm text-muted-foreground">System Active</span>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <div className="h-3 w-3 bg-accent rounded-full animate-pulse-glow" />
+              <span className="text-sm text-muted-foreground">System Active</span>
+            </div>
+            <Button variant="outline" size="sm" onClick={signOut}>
+              <LogOut className="h-4 w-4 mr-2" />
+              Sign Out
+            </Button>
           </div>
         </div>
 
@@ -34,14 +53,14 @@ export const Dashboard = () => {
           />
           <StatCard
             title="Fraud Attempts Blocked"
-            value="247"
+            value={activeAlerts.toString()}
             icon={AlertTriangle}
             trend={{ value: "8.3%", isPositive: false }}
             variant="danger"
           />
           <StatCard
             title="Avg Trust Score"
-            value="87.5"
+            value={latestTrustScore.toFixed(1)}
             icon={TrendingUp}
             trend={{ value: "3.2%", isPositive: true }}
             variant="default"
@@ -57,14 +76,19 @@ export const Dashboard = () => {
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Verification Panel */}
+          <div className="lg:col-span-1">
+            <VerificationPanel userId={userId} />
+          </div>
+
           {/* Trust Score */}
           <div className="lg:col-span-1">
-            <TrustScoreGauge score={87} label="Overall Trust Score" />
+            <TrustScoreGauge score={latestTrustScore} label="Overall Trust Score" />
           </div>
           
           {/* Activity Feed */}
-          <div className="lg:col-span-2">
-            <ActivityFeed />
+          <div className="lg:col-span-1">
+            <ActivityFeed activities={activityLogs || []} />
           </div>
         </div>
 
@@ -75,42 +99,34 @@ export const Dashboard = () => {
             Security Layers Status
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <LayerCard
-              layer="Layer 1"
-              title="Proactive Perimeter"
-              description="SIM intelligence & device fingerprinting with real-time risk scoring"
-              icon={Smartphone}
-              status="active"
-              metrics={[
-                { label: "SIM Age Checks", value: "1,234", status: "active" },
-                { label: "Device Trust Score", value: "92%", status: "success" },
-                { label: "Risk Assessments", value: "856", status: "active" },
-              ]}
-            />
-            <LayerCard
-              layer="Layer 2"
-              title="Secure Core"
-              description="Deepfake detection & continuous behavioral authentication"
-              icon={Video}
-              status="processing"
-              metrics={[
-                { label: "Liveness Checks", value: "445", status: "active" },
-                { label: "Deepfakes Blocked", value: "12", status: "warning" },
-                { label: "Biometric Verifications", value: "98.5%", status: "success" },
-              ]}
-            />
-            <LayerCard
-              layer="Layer 3"
-              title="Intelligence Fabric"
-              description="Transaction monitoring & ML-powered anomaly detection"
-              icon={Activity}
-              status="active"
-              metrics={[
-                { label: "Transactions Scanned", value: "5.2K", status: "active" },
-                { label: "Mule Accounts Detected", value: "8", status: "warning" },
-                { label: "ML Confidence", value: "96.3%", status: "success" },
-              ]}
-            />
+            {securityLayers?.map((layer) => {
+              const icons = [Smartphone, Video, Activity];
+              const titles = ["Proactive Perimeter", "Secure Core", "Intelligence Fabric"];
+              const descriptions = [
+                "SIM intelligence & device fingerprinting with real-time risk scoring",
+                "Deepfake detection & continuous behavioral authentication",
+                "Transaction monitoring & ML-powered anomaly detection"
+              ];
+              
+              const metrics = layer.metrics as any;
+              const metricsList = Object.entries(metrics).map(([key, value]) => ({
+                label: key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+                value: String(value),
+                status: layer.status as "active" | "success" | "warning"
+              }));
+
+              return (
+                <LayerCard
+                  key={layer.id}
+                  layer={`Layer ${layer.layer_number}`}
+                  title={titles[layer.layer_number - 1]}
+                  description={descriptions[layer.layer_number - 1]}
+                  icon={icons[layer.layer_number - 1]}
+                  status={layer.status as "active" | "processing" | "warning" | "error" | "idle"}
+                  metrics={metricsList}
+                />
+              );
+            })}
           </div>
         </div>
       </div>
