@@ -80,10 +80,14 @@ export const Dashboard = ({ userId }: DashboardProps) => {
           />
         </div>
 
-        {/* Trust Score and Activity */}
+        {/* Trust Score and Activity - Fixed Height */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <TrustScoreGauge score={latestTrustScore} label="Overall Trust Score" />
-          <ActivityFeed activities={activityLogs || []} />
+          <div className="min-h-[600px]">
+            <TrustScoreGauge score={latestTrustScore} label="Overall Trust Score" />
+          </div>
+          <div className="min-h-[600px]">
+            <ActivityFeed activities={activityLogs || []} />
+          </div>
         </div>
 
         {/* All Three Verification Layers */}
