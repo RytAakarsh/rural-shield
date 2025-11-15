@@ -61,7 +61,15 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-    const aiAnalysis = JSON.parse(data.choices[0].message.content);
+    
+    // Extract JSON from the AI response (handle markdown code blocks)
+    let content = data.choices[0].message.content;
+    
+    // Remove markdown code block markers if present
+    content = content.replace(/```json\s*/g, '').replace(/```\s*/g, '');
+    
+    // Parse the cleaned JSON
+    const aiAnalysis = JSON.parse(content);
 
     // Store trust score in database
     const { error: scoreError } = await supabaseClient
