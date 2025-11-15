@@ -250,7 +250,7 @@ export const VerificationPanel = ({ userId }: VerificationPanelProps) => {
 
       {/* Liveness Detection Dialog */}
       <Dialog open={showLivenessDialog} onOpenChange={setShowLivenessDialog}>
-        <DialogContent className="max-w-3xl">
+        <DialogContent className="max-w-4xl p-0 gap-0">
           <LivenessDetection
             onComplete={handleLivenessComplete}
             onCancel={() => setShowLivenessDialog(false)}
