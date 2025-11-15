@@ -49,6 +49,50 @@ export type Database = {
           },
         ]
       }
+      behavioral_analytics: {
+        Row: {
+          coercion_indicators: Json | null
+          created_at: string
+          device_motion_anomaly: number | null
+          hesitation_score: number | null
+          id: string
+          touch_pressure_variance: number | null
+          transaction_id: string | null
+          typing_rhythm_anomaly: number | null
+          user_id: string
+        }
+        Insert: {
+          coercion_indicators?: Json | null
+          created_at?: string
+          device_motion_anomaly?: number | null
+          hesitation_score?: number | null
+          id?: string
+          touch_pressure_variance?: number | null
+          transaction_id?: string | null
+          typing_rhythm_anomaly?: number | null
+          user_id: string
+        }
+        Update: {
+          coercion_indicators?: Json | null
+          created_at?: string
+          device_motion_anomaly?: number | null
+          hesitation_score?: number | null
+          id?: string
+          touch_pressure_variance?: number | null
+          transaction_id?: string | null
+          typing_rhythm_anomaly?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "behavioral_analytics_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fraud_alerts: {
         Row: {
           alert_type: string
@@ -90,6 +134,42 @@ export type Database = {
           },
         ]
       }
+      fraud_rings: {
+        Row: {
+          detected_at: string
+          detection_confidence: number
+          id: string
+          member_user_ids: string[]
+          network_metadata: Json | null
+          pattern_type: string
+          resolved_at: string | null
+          ring_name: string
+          status: string | null
+        }
+        Insert: {
+          detected_at?: string
+          detection_confidence: number
+          id?: string
+          member_user_ids: string[]
+          network_metadata?: Json | null
+          pattern_type: string
+          resolved_at?: string | null
+          ring_name: string
+          status?: string | null
+        }
+        Update: {
+          detected_at?: string
+          detection_confidence?: number
+          id?: string
+          member_user_ids?: string[]
+          network_metadata?: Json | null
+          pattern_type?: string
+          resolved_at?: string | null
+          ring_name?: string
+          status?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string | null
@@ -114,6 +194,44 @@ export type Database = {
         }
         Relationships: []
       }
+      scam_signals: {
+        Row: {
+          created_at: string
+          id: string
+          metadata: Json | null
+          recommendation: string
+          severity: string
+          signal_type: string
+          transaction_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          recommendation: string
+          severity: string
+          signal_type: string
+          transaction_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          recommendation?: string
+          severity?: string
+          signal_type?: string
+          transaction_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scam_signals_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       security_layers: {
         Row: {
           id: string
@@ -135,6 +253,98 @@ export type Database = {
           metrics?: Json | null
           status?: string | null
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      transaction_network: {
+        Row: {
+          created_at: string
+          edge_type: string
+          edge_weight: number | null
+          id: string
+          source_user_id: string
+          target_user_id: string | null
+          transaction_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          edge_type: string
+          edge_weight?: number | null
+          id?: string
+          source_user_id: string
+          target_user_id?: string | null
+          transaction_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          edge_type?: string
+          edge_weight?: number | null
+          id?: string
+          source_user_id?: string
+          target_user_id?: string | null
+          transaction_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transaction_network_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      transactions: {
+        Row: {
+          amount: number
+          behavioral_flags: Json | null
+          beneficiary_id: string | null
+          beneficiary_name: string | null
+          completed_at: string | null
+          created_at: string
+          device_id: string | null
+          id: string
+          intervention_type: string | null
+          ip_address: string | null
+          network_flags: Json | null
+          risk_score: number | null
+          status: string
+          transaction_type: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          behavioral_flags?: Json | null
+          beneficiary_id?: string | null
+          beneficiary_name?: string | null
+          completed_at?: string | null
+          created_at?: string
+          device_id?: string | null
+          id?: string
+          intervention_type?: string | null
+          ip_address?: string | null
+          network_flags?: Json | null
+          risk_score?: number | null
+          status?: string
+          transaction_type: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          behavioral_flags?: Json | null
+          beneficiary_id?: string | null
+          beneficiary_name?: string | null
+          completed_at?: string | null
+          created_at?: string
+          device_id?: string | null
+          id?: string
+          intervention_type?: string | null
+          ip_address?: string | null
+          network_flags?: Json | null
+          risk_score?: number | null
+          status?: string
+          transaction_type?: string
+          user_id?: string
         }
         Relationships: []
       }

@@ -3,6 +3,9 @@ import { StatCard } from "./StatCard";
 import { TrustScoreGauge } from "./TrustScoreGauge";
 import { ActivityFeed } from "./ActivityFeed";
 import { LayerCard } from "./LayerCard";
+import { TransactionMonitor } from "./TransactionMonitor";
+import { FraudRingDetection } from "./FraudRingDetection";
+import { Layer3Panel } from "./Layer3Panel";
 import { VerificationPanel } from "./VerificationPanel";
 import { Button } from "./ui/button";
 import { useAuth } from "@/hooks/useAuth";
@@ -131,6 +134,19 @@ export const Dashboard = ({ userId }: DashboardProps) => {
               );
             })}
           </div>
+        </div>
+
+        {/* Layer 3 - Intelligence Fabric */}
+        <div>
+          <h3 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-2">
+            <Activity className="h-6 w-6 text-primary" />
+            Layer 3: Intelligence Fabric
+          </h3>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <Layer3Panel userId={userId} />
+            <FraudRingDetection />
+          </div>
+          <TransactionMonitor userId={userId} />
         </div>
       </div>
     </section>
