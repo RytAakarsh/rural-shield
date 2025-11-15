@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
+import { useRealtimeTrustScore } from "@/hooks/useRealtimeTrustScore";
 
 interface TrustScoreGaugeProps {
   score: number;
@@ -13,6 +14,8 @@ interface TrustScoreGaugeProps {
 
 export const TrustScoreGauge = ({ score, label = "Dashboard Trust", userId }: TrustScoreGaugeProps) => {
   const [behaviorMetrics, setBehaviorMetrics] = useState<any>(null);
+  const realtimeScore = useRealtimeTrustScore(userId);
+  const displayScore = typeof realtimeScore === 'number' ? realtimeScore : score;
 
   // Fetch latest behavioral analytics
   const { data: behaviorData } = useQuery({
@@ -25,7 +28,7 @@ export const TrustScoreGauge = ({ score, label = "Dashboard Trust", userId }: Tr
         .eq("user_id", userId)
         .order("created_at", { ascending: false })
         .limit(1)
-        .single();
+        .maybeSingle();
       return data;
     },
     enabled: !!userId,
@@ -57,7 +60,7 @@ export const TrustScoreGauge = ({ score, label = "Dashboard Trust", userId }: Tr
     return { level: "High Risk", color: "text-destructive", bgColor: "bg-destructive/10" };
   };
 
-  const riskQuality = getRiskQuality(score);
+  const riskQuality = getRiskQuality(displayScore);
 
   const MetricBar = ({ label, value, max = 100, color = "bg-accent" }: any) => (
     <div className="space-y-1.5">
@@ -87,8 +90,8 @@ export const TrustScoreGauge = ({ score, label = "Dashboard Trust", userId }: Tr
           <div className="flex items-center justify-between mb-2">
             <div>
               <div className="text-sm text-muted-foreground mb-1">Current Trust Score</div>
-              <div className={cn("text-4xl font-bold", getScoreColor(score))}>
-                {score}
+              <div className={cn("text-4xl font-bold", getScoreColor(displayScore))}>
+                {displayScore}
                 <span className="text-lg text-muted-foreground ml-1">/ 100</span>
               </div>
             </div>
@@ -97,7 +100,7 @@ export const TrustScoreGauge = ({ score, label = "Dashboard Trust", userId }: Tr
                 {riskQuality.level}
               </div>
               <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                {score >= 80 ? (
+                {displayScore >= 80 ? (
                   <>
                     <TrendingUp className="h-4 w-4 text-accent" />
                     <span className="text-accent">+3.2%</span>
@@ -120,25 +123,25 @@ export const TrustScoreGauge = ({ score, label = "Dashboard Trust", userId }: Tr
             <div className={cn("p-3 rounded-lg", riskQuality.bgColor)}>
               <div className="text-xs text-muted-foreground mb-1">Authentication</div>
               <div className={cn("text-sm font-semibold", riskQuality.color)}>
-                {score >= 80 ? "Verified" : score >= 60 ? "Partial" : "Required"}
+                {displayScore >= 80 ? "Verified" : displayScore >= 60 ? "Partial" : "Required"}
               </div>
             </div>
             <div className={cn("p-3 rounded-lg", riskQuality.bgColor)}>
               <div className="text-xs text-muted-foreground mb-1">Behavioral</div>
               <div className={cn("text-sm font-semibold", riskQuality.color)}>
-                {score >= 80 ? "Normal" : score >= 60 ? "Moderate" : "Anomaly"}
+                {displayScore >= 80 ? "Normal" : displayScore >= 60 ? "Moderate" : "Anomaly"}
               </div>
             </div>
             <div className={cn("p-3 rounded-lg", riskQuality.bgColor)}>
               <div className="text-xs text-muted-foreground mb-1">Network</div>
               <div className={cn("text-sm font-semibold", riskQuality.color)}>
-                {score >= 80 ? "Trusted" : score >= 60 ? "Review" : "Suspicious"}
+                {displayScore >= 80 ? "Trusted" : displayScore >= 60 ? "Review" : "Suspicious"}
               </div>
             </div>
             <div className={cn("p-3 rounded-lg", riskQuality.bgColor)}>
               <div className="text-xs text-muted-foreground mb-1">Transaction</div>
               <div className={cn("text-sm font-semibold", riskQuality.color)}>
-                {score >= 80 ? "Safe" : score >= 60 ? "Caution" : "Block"}
+                {displayScore >= 80 ? "Safe" : displayScore >= 60 ? "Caution" : "Block"}
               </div>
             </div>
           </div>

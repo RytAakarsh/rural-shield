@@ -107,13 +107,37 @@ serve(async (req) => {
       });
     }
 
-    // Calculate and insert trust score based on risk
-    const trustScore = Math.max(10, Math.min(100, 100 - scamSignal.riskScore));
+    // Calculate and insert trust score based on risk + behavioral signals
+    const hesitation = behavioralData?.hesitationScore ?? 0; // 0–1 expected
+    const typing = behavioralData?.typingRhythmAnomaly ?? 0; // 0–1
+    const motion = behavioralData?.deviceMotionAnomaly ?? 0; // 0–1
+    const coercion = behavioralData?.coercionScore ?? 0; // 0–1
+
+    // Convert behavior to additional risk (0–40 max)
+    const behaviorPenalty = Math.min(40, (hesitation * 30) + (typing * 20) + (motion * 15) + (coercion * 40));
+    const combinedRisk = Math.max(0, Math.min(100, (scamSignal.riskScore ?? 0) + behaviorPenalty));
+
+    // Pull latest Layer 1 (SIM) trust if available
+    const { data: lastSim } = await supabaseClient
+      .from('verification_history')
+      .select('details')
+      .eq('user_id', userId)
+      .eq('verification_type', 'sim_verification')
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    const layer1 = Math.max(1, Math.min(99, Number(lastSim?.details?.trustScore ?? 80)));
+    const amountFactor = Math.log10((Number(amount) || 1) + 1); // 0–~5
+    const layer2 = Math.max(50, Math.min(95, Math.round(95 - amountFactor * 5)));
+
+    const trustScore = Math.max(10, Math.min(99, Math.round(100 - combinedRisk)));
+
     await supabaseClient.from('trust_scores').insert({
       user_id: userId,
       score: trustScore,
-      layer_1_score: 85,
-      layer_2_score: 90,
+      layer_1_score: layer1,
+      layer_2_score: layer2,
       layer_3_score: trustScore,
     });
 

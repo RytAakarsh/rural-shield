@@ -15,7 +15,7 @@ export const useRealtimeTrustScore = (userId: string | undefined) => {
         .eq("user_id", userId)
         .order("created_at", { ascending: false })
         .limit(1)
-        .single();
+        .maybeSingle();
       
       if (data) {
         setLatestScore(data.score);
