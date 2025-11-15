@@ -51,12 +51,12 @@ const getBadgeVariant = (type: "success" | "warning" | "danger" | "info") => {
 
 export const ActivityFeed = ({ activities }: ActivityFeedProps) => {
   return (
-    <Card className="p-6 bg-gradient-to-br from-card to-background border-2 border-border">
+    <Card className="p-6 bg-gradient-to-br from-card to-background border-2 border-border min-h-[600px] flex flex-col">
       <h3 className="text-lg font-semibold mb-4 text-foreground flex items-center gap-2">
         <Shield className="h-5 w-5 text-primary" />
         Live Activity Feed
       </h3>
-      <div className="space-y-3 max-h-[420px] overflow-y-auto pr-2 custom-scrollbar">
+      <div className="space-y-3 flex-1 overflow-y-auto pr-2 custom-scrollbar">
         {activities.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
             <Clock className="h-10 w-10 mx-auto mb-2 opacity-50" />

@@ -75,13 +75,13 @@ export const TrustScoreGauge = ({ score, label = "Dashboard Trust", userId }: Tr
   );
 
   return (
-    <Card className="p-6 bg-gradient-to-br from-card to-background border-2 border-border">
+    <Card className="p-6 bg-gradient-to-br from-card to-background border-2 border-border min-h-[600px] flex flex-col">
       <h3 className="text-lg font-semibold mb-4 text-foreground flex items-center gap-2">
         <Shield className="h-5 w-5 text-primary" />
         {label}
       </h3>
       
-      <div className="space-y-6">
+      <div className="space-y-6 flex-1">
         {/* Trust Score Display */}
         <div className={cn("p-4 rounded-lg border-2 transition-all", riskQuality.bgColor, `border-${riskQuality.level === "Low Risk" ? "accent" : riskQuality.level === "Medium Risk" ? "warning" : "destructive"}/30`)}>
           <div className="flex items-center justify-between mb-2">
