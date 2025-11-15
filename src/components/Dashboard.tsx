@@ -1,12 +1,12 @@
-import { Shield, Users, AlertTriangle, TrendingUp, Smartphone, Video, Activity, LogOut } from "lucide-react";
+import { Shield, Users, AlertTriangle, TrendingUp, Activity, LogOut } from "lucide-react";
 import { StatCard } from "./StatCard";
 import { TrustScoreGauge } from "./TrustScoreGauge";
 import { ActivityFeed } from "./ActivityFeed";
-import { LayerCard } from "./LayerCard";
 import { TransactionMonitor } from "./TransactionMonitor";
 import { FraudRingDetection } from "./FraudRingDetection";
+import { Layer1Panel } from "./Layer1Panel";
+import { Layer2Panel } from "./Layer2Panel";
 import { Layer3Panel } from "./Layer3Panel";
-import { VerificationPanel } from "./VerificationPanel";
 import { Button } from "./ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useDashboardData } from "@/hooks/useDashboardData";
@@ -80,73 +80,39 @@ export const Dashboard = ({ userId }: DashboardProps) => {
           />
         </div>
 
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Verification Panel */}
-          <div className="lg:col-span-1">
-            <VerificationPanel userId={userId} />
-          </div>
+        {/* Trust Score and Activity */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <TrustScoreGauge score={latestTrustScore} label="Overall Trust Score" />
+          <ActivityFeed activities={activityLogs || []} />
+        </div>
 
-          {/* Trust Score */}
-          <div className="lg:col-span-1">
-            <TrustScoreGauge score={latestTrustScore} label="Overall Trust Score" />
-          </div>
+        {/* All Three Verification Layers */}
+        <div className="space-y-4">
+          <h2 className="text-2xl font-semibold text-foreground flex items-center gap-2">
+            <Shield className="h-6 w-6 text-primary" />
+            Security Verification Layers
+          </h2>
+          <p className="text-muted-foreground mb-4">
+            Choose any layer to verify - complete them in any order
+          </p>
           
-          {/* Activity Feed */}
-          <div className="lg:col-span-1">
-            <ActivityFeed activities={activityLogs || []} />
-          </div>
-        </div>
-
-        {/* Security Layers */}
-        <div>
-          <h3 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-2">
-            <Activity className="h-6 w-6 text-primary" />
-            Security Layers Status
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {securityLayers?.map((layer) => {
-              const icons = [Smartphone, Video, Activity];
-              const titles = ["Proactive Perimeter", "Secure Core", "Intelligence Fabric"];
-              const descriptions = [
-                "SIM intelligence & device fingerprinting with real-time risk scoring",
-                "Deepfake detection & continuous behavioral authentication",
-                "Transaction monitoring & ML-powered anomaly detection"
-              ];
-              
-              const metrics = layer.metrics as any;
-              const metricsList = Object.entries(metrics).map(([key, value]) => ({
-                label: key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
-                value: String(value),
-                status: layer.status as "active" | "success" | "warning"
-              }));
-
-              return (
-                <LayerCard
-                  key={layer.id}
-                  layer={`Layer ${layer.layer_number}`}
-                  title={titles[layer.layer_number - 1]}
-                  description={descriptions[layer.layer_number - 1]}
-                  icon={icons[layer.layer_number - 1]}
-                  status={layer.status as "active" | "processing" | "warning" | "error" | "idle"}
-                  metrics={metricsList}
-                />
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Layer 3 - Intelligence Fabric */}
-        <div>
-          <h3 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-2">
-            <Activity className="h-6 w-6 text-primary" />
-            Layer 3: Intelligence Fabric
-          </h3>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <Layer1Panel userId={userId} />
+            <Layer2Panel userId={userId} />
             <Layer3Panel userId={userId} />
-            <FraudRingDetection />
           </div>
-          <TransactionMonitor userId={userId} />
+        </div>
+
+        {/* Real-Time Monitoring */}
+        <div className="space-y-4">
+          <h2 className="text-2xl font-semibold text-foreground flex items-center gap-2">
+            <Activity className="h-6 w-6 text-primary" />
+            Real-Time Intelligence & Monitoring
+          </h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <FraudRingDetection />
+            <TransactionMonitor userId={userId} />
+          </div>
         </div>
       </div>
     </section>
