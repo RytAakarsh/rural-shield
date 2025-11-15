@@ -16,15 +16,15 @@ serve(async (req) => {
 
     // Simulate SIM intelligence check (Layer 1)
     // In production, this would call actual telecom APIs
-    const simAge = Math.floor(Math.random() * 365) + 30;
+    const simAge = Math.floor(Math.random() * 365) + 180; // Older SIMs are more trusted
     const carrier = ["Airtel", "Jio", "BSNL", "Vi"][Math.floor(Math.random() * 4)];
-    const registeredLocation = ["Mumbai", "Delhi", "Bangalore", "Rural UP"][Math.floor(Math.random() * 4)];
-    const swapHistory = Math.floor(Math.random() * 3);
-    const riskScore = Math.random() * 100;
+    const registeredLocation = ["Mumbai", "Delhi", "Bangalore", "Chennai"][Math.floor(Math.random() * 4)];
+    const swapHistory = Math.floor(Math.random() * 2); // Low swap history
     
-    // Calculate trust score (inverse of risk)
-    const trustScore = 100 - riskScore;
-    const riskLevel = trustScore > 70 ? "low" : trustScore > 40 ? "medium" : "high";
+    // Always generate high trust scores (80-95 range) for good/green status
+    const trustScore = Math.floor(Math.random() * 15) + 80; // 80-95
+    const riskScore = 100 - trustScore;
+    const riskLevel = "low"; // Always low risk for green status
     
     const simData = {
       simAge,
@@ -46,7 +46,7 @@ serve(async (req) => {
     await supabaseClient.from('verification_history').insert({
       user_id: userId,
       verification_type: 'sim_verification',
-      status: trustScore > 50 ? 'passed' : 'failed',
+      status: 'passed', // Always passes now with high trust scores
       details: simData,
     });
 
