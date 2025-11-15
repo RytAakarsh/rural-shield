@@ -27,6 +27,7 @@ export const LivenessDetection = ({ onComplete, onCancel }: LivenessDetectionPro
 
   const startCamera = async () => {
     try {
+      console.log("Starting camera...");
       setInstruction("Requesting camera access...");
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { 
@@ -37,18 +38,37 @@ export const LivenessDetection = ({ onComplete, onCancel }: LivenessDetectionPro
         audio: false,
       });
 
+      console.log("Camera stream obtained:", stream);
+      console.log("Video tracks:", stream.getVideoTracks());
+
       streamRef.current = stream;
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
+        console.log("Video srcObject set");
         
-        // Wait for video to be ready
-        videoRef.current.onloadedmetadata = () => {
-          videoRef.current?.play();
-          setCameraActive(true);
-          setCameraError(false);
-          setInstruction("✅ Camera ready! Click 'Start Detection' to begin");
-          toast.success("Camera access granted!");
+        // Wait for video to be ready and play
+        videoRef.current.onloadedmetadata = async () => {
+          console.log("Video metadata loaded");
+          try {
+            await videoRef.current?.play();
+            console.log("Video playing successfully");
+            setCameraActive(true);
+            setCameraError(false);
+            setInstruction("✅ Camera ready! Click 'Start Detection' to begin");
+            toast.success("Camera access granted!");
+          } catch (playError) {
+            console.error("Error playing video:", playError);
+            toast.error("Could not start video playback. Please try again.");
+          }
         };
+
+        // Also try to play immediately
+        try {
+          await videoRef.current.play();
+          console.log("Video play started immediately");
+        } catch (e) {
+          console.log("Immediate play failed, waiting for metadata:", e);
+        }
       }
     } catch (error) {
       console.error("Error accessing camera:", error);
@@ -209,7 +229,10 @@ export const LivenessDetection = ({ onComplete, onCancel }: LivenessDetectionPro
             playsInline
             muted
             className="w-full h-full object-cover"
-            style={{ transform: "scaleX(-1)" }}
+            style={{ transform: "scaleX(-1)", minHeight: "300px" }}
+            onLoadedMetadata={() => console.log("Video metadata loaded event")}
+            onPlay={() => console.log("Video play event")}
+            onError={(e) => console.error("Video error:", e)}
           />
           <canvas ref={canvasRef} className="hidden" />
           
