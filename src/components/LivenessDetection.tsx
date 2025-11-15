@@ -14,7 +14,7 @@ export const LivenessDetection = ({ onComplete, onCancel }: LivenessDetectionPro
   const [isDetecting, setIsDetecting] = useState(false);
   const [cameraActive, setCameraActive] = useState(false);
   const [cameraError, setCameraError] = useState(false);
-  const [instruction, setInstruction] = useState("Initializing camera...");
+  const [instruction, setInstruction] = useState("Click 'Open Camera' to allow camera access");
   const [movementDetected, setMovementDetected] = useState(false);
   const [detectionProgress, setDetectionProgress] = useState(0);
   const [movementScore, setMovementScore] = useState(0);
@@ -181,8 +181,7 @@ export const LivenessDetection = ({ onComplete, onCancel }: LivenessDetectionPro
   };
 
   useEffect(() => {
-    startCamera();
-
+    // Do not auto-start camera; request on user gesture for iframe/browser permission compliance
     return () => {
       stopCamera();
       if (detectionTimeoutRef.current) {
@@ -216,9 +215,16 @@ export const LivenessDetection = ({ onComplete, onCancel }: LivenessDetectionPro
           
           {!cameraActive && !cameraError && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/80">
-              <div className="text-center text-white">
-                <Loader2 className="h-12 w-12 animate-spin mx-auto mb-4" />
-                <p className="text-lg">Initializing camera...</p>
+              <div className="text-center text-white space-y-4">
+                <Video className="h-12 w-12 mx-auto" />
+                <p className="text-lg font-medium">Camera is not active</p>
+                <p className="text-sm text-muted-foreground">
+                  Click the button below to allow camera access.
+                </p>
+                <Button onClick={startCamera} size="lg" className="mt-2">
+                  <Video className="mr-2 h-4 w-4" />
+                  Open Camera
+                </Button>
               </div>
             </div>
           )}
@@ -277,6 +283,12 @@ export const LivenessDetection = ({ onComplete, onCancel }: LivenessDetectionPro
         </div>
 
         <div className="flex gap-2">
+          {!cameraActive && !cameraError && (
+            <Button onClick={startCamera} className="flex-1" size="lg">
+              <Video className="mr-2 h-4 w-4" />
+              Open Camera
+            </Button>
+          )}
           {cameraActive && !isDetecting && !cameraError && (
             <Button onClick={startDetection} className="flex-1" size="lg">
               <Video className="mr-2 h-4 w-4" />
