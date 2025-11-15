@@ -20,34 +20,34 @@ export const TrustScoreGauge = ({ score, label = "Trust Score" }: TrustScoreGaug
     return "stroke-destructive";
   };
 
-  const radius = 70;
+  const radius = 60;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (score / 100) * circumference;
 
   return (
-    <Card className="p-6 bg-gradient-to-br from-card to-background border-2 border-border h-full flex flex-col">
-      <h3 className="text-lg font-semibold mb-6 text-foreground flex items-center gap-2">
+    <Card className="p-6 bg-gradient-to-br from-card to-background border-2 border-border">
+      <h3 className="text-lg font-semibold mb-4 text-foreground flex items-center gap-2">
         <Shield className="h-5 w-5 text-primary" />
         {label}
       </h3>
       
-      <div className="flex flex-col items-center flex-1 justify-between">
-        <div className="relative w-48 h-48">
+      <div className="flex flex-col items-center">
+        <div className="relative w-40 h-40">
           <svg className="transform -rotate-90 w-full h-full">
             <circle
-              cx="96"
-              cy="96"
+              cx="80"
+              cy="80"
               r={radius}
               stroke="hsl(var(--muted))"
-              strokeWidth="12"
+              strokeWidth="10"
               fill="none"
             />
             <circle
-              cx="96"
-              cy="96"
+              cx="80"
+              cy="80"
               r={radius}
               className={cn("transition-all duration-1000 ease-out", getGaugeColor(score))}
-              strokeWidth="12"
+              strokeWidth="10"
               fill="none"
               strokeDasharray={circumference}
               strokeDashoffset={strokeDashoffset}
@@ -58,41 +58,41 @@ export const TrustScoreGauge = ({ score, label = "Trust Score" }: TrustScoreGaug
             />
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className={cn("text-5xl font-bold", getScoreColor(score))}>
+            <span className={cn("text-4xl font-bold", getScoreColor(score))}>
               {score}
             </span>
-            <span className="text-sm text-muted-foreground mt-1">/ 100</span>
+            <span className="text-xs text-muted-foreground mt-1">/ 100</span>
           </div>
         </div>
         
-        <div className="mt-8 w-full space-y-4">
-          <div className="p-4 rounded-lg bg-muted/30 border border-border/50">
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-sm text-muted-foreground">Risk Level</span>
-              <span className={cn("font-bold text-lg", getScoreColor(score))}>
+        <div className="mt-6 w-full space-y-3">
+          <div className="p-3 rounded-lg bg-muted/30 border border-border/50">
+            <div className="flex justify-between items-center mb-1.5">
+              <span className="text-xs text-muted-foreground">Risk Level</span>
+              <span className={cn("font-bold text-base", getScoreColor(score))}>
                 {score >= 80 ? "Low Risk" : score >= 60 ? "Medium Risk" : "High Risk"}
               </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Status</span>
-              <span className="font-semibold text-sm text-foreground">
+              <span className="text-xs text-muted-foreground">Status</span>
+              <span className="font-semibold text-xs text-foreground">
                 {score >= 80 ? "Verified" : score >= 60 ? "Review Required" : "Action Needed"}
               </span>
             </div>
           </div>
           
           <div className="grid grid-cols-3 gap-2 text-center">
-            <div className="p-3 rounded-lg bg-accent/10">
-              <div className="text-xs text-muted-foreground mb-1">Layer 1</div>
-              <div className="text-sm font-semibold text-accent">Active</div>
+            <div className="p-2 rounded-lg bg-accent/10">
+              <div className="text-xs text-muted-foreground mb-0.5">Layer 1</div>
+              <div className="text-xs font-semibold text-accent">Active</div>
             </div>
-            <div className="p-3 rounded-lg bg-accent/10">
-              <div className="text-xs text-muted-foreground mb-1">Layer 2</div>
-              <div className="text-sm font-semibold text-accent">Active</div>
+            <div className="p-2 rounded-lg bg-accent/10">
+              <div className="text-xs text-muted-foreground mb-0.5">Layer 2</div>
+              <div className="text-xs font-semibold text-accent">Active</div>
             </div>
-            <div className="p-3 rounded-lg bg-accent/10">
-              <div className="text-xs text-muted-foreground mb-1">Layer 3</div>
-              <div className="text-sm font-semibold text-accent">Active</div>
+            <div className="p-2 rounded-lg bg-accent/10">
+              <div className="text-xs text-muted-foreground mb-0.5">Layer 3</div>
+              <div className="text-xs font-semibold text-accent">Active</div>
             </div>
           </div>
         </div>

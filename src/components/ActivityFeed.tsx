@@ -51,17 +51,17 @@ const getBadgeVariant = (type: "success" | "warning" | "danger" | "info") => {
 
 export const ActivityFeed = ({ activities }: ActivityFeedProps) => {
   return (
-    <Card className="p-6 bg-gradient-to-br from-card to-background border-2 border-border h-full flex flex-col">
-      <h3 className="text-lg font-semibold mb-6 text-foreground flex items-center gap-2">
+    <Card className="p-6 bg-gradient-to-br from-card to-background border-2 border-border">
+      <h3 className="text-lg font-semibold mb-4 text-foreground flex items-center gap-2">
         <Shield className="h-5 w-5 text-primary" />
         Live Activity Feed
       </h3>
-      <div className="space-y-3 overflow-y-auto pr-2 custom-scrollbar flex-1">
+      <div className="space-y-3 max-h-[420px] overflow-y-auto pr-2 custom-scrollbar">
         {activities.length === 0 ? (
-          <div className="text-center py-12 text-muted-foreground">
-            <Clock className="h-12 w-12 mx-auto mb-3 opacity-50" />
+          <div className="text-center py-8 text-muted-foreground">
+            <Clock className="h-10 w-10 mx-auto mb-2 opacity-50" />
             <p className="text-sm">No activity logged yet</p>
-            <p className="text-xs mt-1 opacity-70">Activities will appear here in real-time</p>
+            <p className="text-xs mt-1 opacity-70">Activities will appear here</p>
           </div>
         ) : (
           activities.slice(0, 8).map((activity, index) => {
@@ -70,12 +70,12 @@ export const ActivityFeed = ({ activities }: ActivityFeedProps) => {
               <div
                 key={activity.id}
                 className={cn(
-                  "flex gap-3 p-3 rounded-lg bg-muted/30 border border-border/50 transition-all duration-300 hover:bg-muted/50 animate-slide-up",
+                  "flex gap-3 p-2.5 rounded-lg bg-muted/30 border border-border/50 transition-all duration-300 hover:bg-muted/50 animate-slide-up",
                   "hover:border-primary/30"
                 )}
                 style={{ animationDelay: `${index * 0.05}s` }}
               >
-                <div className="flex-shrink-0 mt-1">{getActivityIcon(type)}</div>
+                <div className="flex-shrink-0 mt-0.5">{getActivityIcon(type)}</div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2 mb-1">
                     <h4 className="text-sm font-semibold text-foreground truncate">
@@ -85,7 +85,7 @@ export const ActivityFeed = ({ activities }: ActivityFeedProps) => {
                       {type}
                     </Badge>
                   </div>
-                  <p className="text-xs text-muted-foreground mb-2 line-clamp-2">{activity.description}</p>
+                  <p className="text-xs text-muted-foreground mb-1.5 line-clamp-2">{activity.description}</p>
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     <Clock className="h-3 w-3" />
                     <span>{formatDistanceToNow(new Date(activity.created_at), { addSuffix: true })}</span>
