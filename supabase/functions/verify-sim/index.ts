@@ -16,12 +16,24 @@ serve(async (req) => {
 
     // Simulate SIM intelligence check (Layer 1)
     // In production, this would call actual telecom APIs
+    const simAge = Math.floor(Math.random() * 365) + 30;
+    const carrier = ["Airtel", "Jio", "BSNL", "Vi"][Math.floor(Math.random() * 4)];
+    const registeredLocation = ["Mumbai", "Delhi", "Bangalore", "Rural UP"][Math.floor(Math.random() * 4)];
+    const swapHistory = Math.floor(Math.random() * 3);
+    const riskScore = Math.random() * 100;
+    
+    // Calculate trust score (inverse of risk)
+    const trustScore = 100 - riskScore;
+    const riskLevel = trustScore > 70 ? "low" : trustScore > 40 ? "medium" : "high";
+    
     const simData = {
-      simAge: Math.floor(Math.random() * 365) + 30, // Days
-      carrier: ["Airtel", "Jio", "BSNL", "Vi"][Math.floor(Math.random() * 4)],
-      registeredLocation: ["Mumbai", "Delhi", "Bangalore", "Rural UP"][Math.floor(Math.random() * 4)],
-      swapHistory: Math.floor(Math.random() * 3),
-      riskScore: Math.random() * 100,
+      simAge,
+      carrier,
+      registeredLocation,
+      swapHistory,
+      riskScore,
+      trustScore,
+      riskLevel,
     };
 
     // Initialize Supabase client
@@ -34,7 +46,7 @@ serve(async (req) => {
     await supabaseClient.from('verification_history').insert({
       user_id: userId,
       verification_type: 'sim_verification',
-      status: simData.riskScore > 70 ? 'passed' : 'failed',
+      status: trustScore > 50 ? 'passed' : 'failed',
       details: simData,
     });
 
@@ -42,7 +54,7 @@ serve(async (req) => {
     await supabaseClient.from('activity_logs').insert({
       user_id: userId,
       activity_type: 'sim_verification',
-      description: `SIM verification completed - Score: ${simData.riskScore.toFixed(1)}`,
+      description: `SIM verification completed - Trust Score: ${trustScore.toFixed(1)} (${riskLevel})`,
       metadata: simData,
     });
 
