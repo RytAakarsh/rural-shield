@@ -24,6 +24,9 @@ export const useRealtimeTrustScore = (userId: string | undefined) => {
 
     fetchLatestScore();
 
+    // Poll periodically in case realtime events are missed
+    const intervalId = window.setInterval(fetchLatestScore, 3000);
+
     // Subscribe to real-time updates
     const channel = supabase
       .channel('trust-score-changes')
@@ -43,6 +46,7 @@ export const useRealtimeTrustScore = (userId: string | undefined) => {
       .subscribe();
 
     return () => {
+      window.clearInterval(intervalId);
       supabase.removeChannel(channel);
     };
   }, [userId]);
