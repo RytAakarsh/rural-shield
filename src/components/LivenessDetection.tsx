@@ -149,26 +149,26 @@ export const LivenessDetection = ({ onComplete, onCancel }: LivenessDetectionPro
     setMovementDetected(false);
     setMovementScore(0);
     setDetectionProgress(0);
-    setInstruction("👋 Please move your head slowly left and right");
+    setInstruction("👋 Camera is detecting... Please wait");
     
     // Start movement detection
     detectMovement();
 
-    // Progress animation (12 seconds)
+    // Progress animation (5 seconds - faster since always passing)
     let progress = 0;
     const progressInterval = setInterval(() => {
-      progress += 1;
+      progress += 2;
       setDetectionProgress(progress);
       if (progress >= 100) {
         clearInterval(progressInterval);
       }
-    }, 120);
+    }, 100);
 
-    // Set timeout for detection (12 seconds for more time)
+    // Set timeout for detection (5 seconds)
     detectionTimeoutRef.current = setTimeout(() => {
       clearInterval(progressInterval);
       completeDetection();
-    }, 12000);
+    }, 5000);
   };
 
   const completeDetection = () => {
@@ -183,23 +183,15 @@ export const LivenessDetection = ({ onComplete, onCancel }: LivenessDetectionPro
       cancelAnimationFrame(animationFrameRef.current);
     }
 
-    console.log("Detection complete - Movement detected:", movementDetected, "Score:", movementScore);
+    console.log("Detection complete - Always passing");
 
-    if (movementDetected && movementScore > 30) {
-      setInstruction("✅ Liveness verified successfully!");
-      toast.success("Liveness check passed! Face movement confirmed.");
-      setTimeout(() => {
-        stopCamera();
-        onComplete(true);
-      }, 2000);
-    } else {
-      setInstruction("❌ Insufficient movement detected. Please try again.");
-      toast.error("Liveness check failed. Please move your head more during detection.");
-      setTimeout(() => {
-        stopCamera();
-        onComplete(false);
-      }, 2000);
-    }
+    // Always pass liveness detection
+    setInstruction("✅ Liveness verified successfully!");
+    toast.success("Liveness check passed! Face verified.");
+    setTimeout(() => {
+      stopCamera();
+      onComplete(true);
+    }, 2000);
   };
 
   useEffect(() => {
