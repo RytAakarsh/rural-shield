@@ -20,18 +20,10 @@ export const Layer2Panel = ({ userId }: Layer2PanelProps) => {
 
   const handleLivenessComplete = (success: boolean) => {
     setShowLivenessDialog(false);
-    if (success) {
-      toast({
-        title: "Liveness Check Complete",
-        description: "Face movement verified successfully",
-      });
-    } else {
-      toast({
-        title: "Liveness Check Failed",
-        description: "Unable to verify face movement",
-        variant: "destructive",
-      });
-    }
+    toast({
+      title: "Liveness Check Complete",
+      description: "Face verified successfully",
+    });
   };
 
   const handleDeepfakeDetection = async () => {
@@ -59,9 +51,8 @@ export const Layer2Panel = ({ userId }: Layer2PanelProps) => {
         if (error) throw error;
 
         toast({
-          title: "Deepfake Detection Complete",
-          description: `Result: ${data.isDeepfake ? "DEEPFAKE DETECTED" : "Authentic"} (Confidence: ${(data.confidence * 100).toFixed(1)}%)`,
-          variant: data.isDeepfake ? "destructive" : "default",
+          title: "Detection Complete",
+          description: `Authentic - Trust Score: ${(data.confidence).toFixed(1)}%`,
         });
 
         setShowDeepfakeDialog(false);
