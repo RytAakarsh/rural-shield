@@ -81,6 +81,15 @@ serve(async (req) => {
       metadata: simData,
     });
 
+    // Insert/update trust score
+    await supabaseClient.from('trust_scores').insert({
+      user_id: userId,
+      score: trustScore,
+      layer_1_score: trustScore,
+      layer_2_score: null,
+      layer_3_score: null,
+    });
+
     return new Response(JSON.stringify(simData), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
