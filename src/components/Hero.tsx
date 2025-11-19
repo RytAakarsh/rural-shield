@@ -56,6 +56,10 @@ export const Hero = () => {
             <Button 
               size="lg" 
               className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-8 shadow-[0_0_20px_rgba(6,182,212,0.4)] hover:shadow-[0_0_30px_rgba(6,182,212,0.6)] transition-all duration-300"
+              onClick={() => {
+                const dashboardSection = document.querySelector('[data-dashboard-section]');
+                dashboardSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }}
             >
               View Dashboard
               <ArrowRight className="ml-2 h-5 w-5" />
@@ -64,25 +68,10 @@ export const Hero = () => {
               size="lg" 
               variant="outline"
               className="border-2 border-primary/30 hover:bg-primary/10 font-semibold px-8"
+              onClick={() => window.open('https://fraudsheild.vercel.app/', '_blank')}
             >
               Learn More
             </Button>
-          </div>
-          
-          {/* Stats */}
-          <div className="grid grid-cols-3 gap-8 pt-12 max-w-3xl mx-auto animate-slide-up" style={{ animationDelay: "0.5s" }}>
-            <div className="space-y-2">
-              <div className="text-3xl font-bold text-accent">99.8%</div>
-              <div className="text-sm text-muted-foreground">Detection Rate</div>
-            </div>
-            <div className="space-y-2">
-              <div className="text-3xl font-bold text-primary">2.3s</div>
-              <div className="text-sm text-muted-foreground">Avg Response Time</div>
-            </div>
-            <div className="space-y-2">
-              <div className="text-3xl font-bold text-secondary">50M+</div>
-              <div className="text-sm text-muted-foreground">Transactions Secured</div>
-            </div>
           </div>
         </div>
       </div>

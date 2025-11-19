@@ -25,7 +25,7 @@ export const Dashboard = ({ userId }: DashboardProps) => {
   const latestTrustScore = realtimeTrustScore ?? trustScores?.[0]?.score ?? 87;
   const activeAlerts = fraudAlerts?.filter(alert => alert.status === 'active').length || 0;
   return (
-    <section className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
+    <section className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8" data-dashboard-section>
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
